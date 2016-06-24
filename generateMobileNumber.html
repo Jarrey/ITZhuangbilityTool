@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+</head>
+<body>
+<div ng-app="getCode" ng-controller="getCodeCtrl">
+<div ng-app="">
+ 	<p>Mobile： <input type="text" ng-model="name"></p>
+</div>
+
+<script>
+var app = angular.module('getCode', []);
+app.controller('getCodeCtrl', function($scope) {
+    $scope.num = function() {
+        var nums = [];
+        var numstr = $scope.name;
+        while (numstr.length > 2){
+            nums.push(numstr.substr(0,2));
+            numstr=numstr.substr(2);
+        }
+        nums.push(numstr);
+        var list = [];
+        
+        for(var i = 0; i < nums.length; i++)
+        {    
+            var n = parseInt(nums[i]);
+            var values = [];
+            while(n > 9){
+                var ran = Math.floor(Math.random() * 9) + 1;
+                values.push(ran);
+                n = n - ran;  
+            }
+            values.push(n)
+            list.push(values)
+        }
+        return list;
+    };
+});
+</script>
+<pre>
+// Javascript
+var values = {{num()}};
+
+function getMobile(values) {
+    var mobile = "";
+    values.forEach(function(v){
+        var s = 0;
+        v.forEach(function(i) {
+            s = s + i;
+        });
+        mobile = mobile + s.toString();
+    });
+    return mobile;
+};
+
+alert(getMobile(values));
+</pre>
+</body>
+</html>
