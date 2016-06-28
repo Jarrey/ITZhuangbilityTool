@@ -2,20 +2,23 @@
 <html>
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
 </head>
 <body>
 <div ng-app="getCode" ng-controller="getCodeCtrl">
 <div ng-app="">
- 	<p>Mobile： <input type="text" ng-model="name"></p>
+    <p>Mobile: <input type="text" ng-model="phone"></p>
 </div>
 
 <script>
 var app = angular.module('getCode', []);
 app.controller('getCodeCtrl', function($scope) {
-    $scope.num = function() {
+    $scope.num = function(prefix, suffix) {
         var nums = [];
-        var numstr = $scope.name;
+        var numstr = $scope.phone;
         while (numstr.length > 2){
             nums.push(numstr.substr(0,2));
             numstr=numstr.substr(2);
@@ -33,29 +36,61 @@ app.controller('getCodeCtrl', function($scope) {
                 n = n - ran;  
             }
             values.push(n)
-            list.push(values)
+            list.push(prefix + values.toString() + suffix)
         }
-        return list;
+        return list.toString();
     };
 });
 </script>
-<pre>
-// Javascript
-var values = {{num()}};
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#javascript">Javascript</a></li>
+  <li><a data-toggle="tab" href="#csharp">C#</a></li>
+</ul>
+<div class="tab-content">
+<div id="javascript" class="tab-pane fade in active">
+  <pre>
+    // Javascript
+    var values = [{{num('\t\n[', ']')}}];
 
-function getMobile(values) {
-    var mobile = "";
-    values.forEach(function(v){
-        var s = 0;
-        v.forEach(function(i) {
-            s = s + i;
+    function getMobile(values) {
+        var mobile = "";
+        values.forEach(function(v){
+            var s = 0;
+            v.forEach(function(i) {
+                s = s + i;
+            });
+            mobile = mobile + s.toString();
         });
-        mobile = mobile + s.toString();
-    });
-    return mobile;
-};
+        return mobile;
+    };
 
-alert(getMobile(values));
-</pre>
+    alert(getMobile(values));
+  </pre>
+</div>
+<div id="csharp" class="tab-pane fade">
+  <pre>
+    // C#
+    internal class Program
+    {
+        private static int[][] values = { {{num('\t\nnew[]{', '}')}} };
+        private static void Main(string[] args)
+        {
+            string mobile = "";
+            foreach (int[] v in values)
+            {
+                int s = 0;
+                foreach (int i in v)
+                {
+                    s += i;
+                }
+                mobile += s.ToString();
+            }
+            
+            Console.WriteLine(mobile);
+        }
+    }
+  </pre>
+</div>
+</div>
 </body>
 </html>
